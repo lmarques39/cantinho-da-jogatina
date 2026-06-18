@@ -31,7 +31,7 @@ const SLIDES: Slide[] = [
     subtitle:
       'Jogos, consolas e acessórios usados — testados, classificados por estado e prontos para jogar. Porque cada jogo merece um novo jogador.',
     primaryCta: { label: 'Ver coleção', href: '/loja' },
-    secondaryCta: { label: 'Entra em contato aqui', href: '/contactos' },
+    secondaryCta: { label: 'Entra em contacto aqui', href: '/contactos' },
     className: 'bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900',
     image: '/images/banner/carrossel_1.png',
     textColor: '#D4A373',
@@ -85,7 +85,7 @@ export function PromoBanner() {
   }, [index, next]);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
       <div className="group dark relative overflow-hidden rounded-cart border border-ink-700 shadow-cart">
         {/* Slides */}
         <div

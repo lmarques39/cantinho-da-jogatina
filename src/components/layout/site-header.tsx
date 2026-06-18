@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart';
 import { cn } from '@/lib/utils';
 import { SearchBar } from './search-bar';
 import { ThemeToggle } from './theme-toggle';
+import { HeaderAuth } from './header-auth';
 
 const NAV_LINKS = [
   { href: '/loja', label: 'Loja' },
@@ -20,7 +21,13 @@ const NAV_LINKS = [
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems());
+
+  // O carrinho é lido do localStorage — só existe no cliente.
+  // Sem este guard, o servidor renderiza 0 itens e o cliente renderiza N,
+  // causando hydration mismatch.
+  useEffect(() => { setMounted(true); }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-700 bg-ink-800/95 backdrop-blur-sm">
@@ -52,13 +59,14 @@ export function SiteHeader() {
           <div className="flex items-center gap-1">
             <SearchBar />
             <ThemeToggle />
+            <HeaderAuth />
             <Link
               href="/carrinho"
               aria-label="Carrinho de compras"
               className="relative p-2 text-ink-200 hover:text-cartridge-400 transition-colors rounded-cart"
             >
               <ShoppingBag className="h-5 w-5" />
-              {totalItems > 0 && (
+              {mounted && totalItems > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-signal-500 px-1 text-[10px] font-bold text-ink-50 font-mono">
                   {totalItems}
                 </span>

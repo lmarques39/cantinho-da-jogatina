@@ -63,7 +63,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        <ShopFilters activeType={productType} activeBrand={brand} activePlatform={platform} activeCondition={params.estado} />
+        <ShopFilters activeType={productType} activeBrand={brand} activePlatform={platform} activeCondition={params.estado} activeSearch={params.pesquisa} />
 
         <div>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
@@ -83,7 +83,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </div>
           ) : (
             <ProductGrid
-              key={`${productType ?? ''}-${brand ?? ''}-${params.estado ?? ''}-${params.pesquisa ?? ''}-${sort}`}
+              key={`${productType ?? ''}-${brand ?? ''}-${platform ?? ''}-${params.estado ?? ''}-${params.pesquisa ?? ''}-${sort}`}
               initialProducts={products}
               total={total}
               perPage={PER_PAGE}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/layout/site-header';
@@ -28,19 +29,6 @@ export const metadata: Metadata = {
     'Compra e vende jogos e consolas usadas com confiança. Vasta seleção para todas as plataformas, do retro ao atual.',
 };
 
-// Script que corre ANTES da página renderizar, para evitar um "flash" de
-// cor errada. Lê o localStorage e aplica a classe .dark imediatamente.
-const themeScript = `
-(function(){
-  try {
-    var t = localStorage.getItem('theme');
-    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    }
-  } catch(e) {}
-})()
-`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -48,10 +36,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body className="font-body min-h-screen flex flex-col">
+        {/*
+          Corre ANTES da hidratação do React para evitar flash de tema errado.
+          strategy="beforeInteractive" é o equivalente correcto em Next.js 16
+          ao <script> inline no <head> — garante execução antes do render.
+        */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+          }}
+        />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
