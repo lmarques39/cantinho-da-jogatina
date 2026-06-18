@@ -29,10 +29,11 @@ const SLIDES: Slide[] = [
       </>
     ),
     subtitle:
-      'Jogos, consolas e acessórios usados — testados, classificados por estado e prontos para jogar. Vendemos, compramos e damos uma segunda vida a cada cartucho.',
+      'Jogos, consolas e acessórios usados — testados, classificados por estado e prontos para jogar. Porque cada jogo merece um novo jogador.',
     primaryCta: { label: 'Ver coleção', href: '/loja' },
-    secondaryCta: { label: 'A tua consola está a dar tilt?', href: '/contactos' },
+    secondaryCta: { label: 'Entra em contato aqui', href: '/contactos' },
     className: 'bg-gradient-to-br from-ink-700 via-ink-800 to-ink-900',
+    image: '/images/banner/carrossel_1.png',
     textColor: '#D4A373',
   },
   {
@@ -41,6 +42,7 @@ const SLIDES: Slide[] = [
     subtitle: 'SNES, Nintendo 64, Game Boy e muito mais — testados e prontos a jogar.',
     primaryCta: { label: 'Ver retro', href: '/loja?marca=retro' },
     className: 'bg-gradient-to-br from-[#16323a] via-ink-800 to-ink-900',
+    image: '/images/banner/carrossel_2.png',
     textColor: '#D4A373',
   },
   {
@@ -49,6 +51,7 @@ const SLIDES: Slide[] = [
     subtitle: 'A geração atual a preços de usado, com a confiança do Cantinho da Jogatina.',
     primaryCta: { label: 'Ver Playstation', href: '/loja?marca=playstation' },
     className: 'bg-gradient-to-br from-[#1a2f3a] via-ink-800 to-ink-900',
+    image: '/images/banner/carrossel_3.png',
     textColor: '#D4A373',
   },
   {
@@ -57,7 +60,7 @@ const SLIDES: Slide[] = [
     subtitle: 'Trazemos uma segunda vida a cada cartucho. Compramos a tua coleção.',
     primaryCta: { label: 'Saber mais', href: '/contactos' },
     className: 'bg-gradient-to-br from-[#3a2f12] via-ink-800 to-ink-900',
-    image: '/images/banner/reparacao.png',
+    image: '/images/banner/carrossel_4.png',
     textColor: '#D4A373',
   },
 ];
@@ -83,7 +86,7 @@ export function PromoBanner() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
-      <div className="dark relative overflow-hidden rounded-cart border border-ink-700 shadow-cart">
+      <div className="group dark relative overflow-hidden rounded-cart border border-ink-700 shadow-cart">
         {/* Slides */}
         <div
           className="flex transition-transform duration-500 ease-out"
@@ -152,14 +155,14 @@ export function PromoBanner() {
         <button
           onClick={prev}
           aria-label="Slide anterior"
-          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-ink-900/60 p-2 text-ink-100 hover:bg-ink-900 hover:text-cartridge-400 transition-colors backdrop-blur-sm"
+          className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-ink-900/60 p-2 text-ink-100 hover:bg-ink-900 hover:text-cartridge-400 transition-all backdrop-blur-sm opacity-0 group-hover:opacity-100 hidden sm:block"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={next}
           aria-label="Slide seguinte"
-          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-ink-900/60 p-2 text-ink-100 hover:bg-ink-900 hover:text-cartridge-400 transition-colors backdrop-blur-sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-ink-900/60 p-2 text-ink-100 hover:bg-ink-900 hover:text-cartridge-400 transition-all backdrop-blur-sm opacity-0 group-hover:opacity-100 hidden sm:block"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

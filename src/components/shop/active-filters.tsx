@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { PRODUCT_TYPES, BRANDS, type ProductTypeSlug, type BrandSlug } from '@/lib/taxonomy';
+import { PRODUCT_TYPES, BRANDS, BRAND_PLATFORMS, type ProductTypeSlug, type BrandSlug } from '@/lib/taxonomy';
 
 interface ActiveFiltersProps {
   activeType?: ProductTypeSlug;
   activeBrand?: BrandSlug;
+  activePlatform?: string;
   activeCondition?: string;
 }
 
@@ -16,7 +17,7 @@ function buildHref(params: Record<string, string | undefined>) {
   return `/loja${qs ? `?${qs}` : ''}`;
 }
 
-export function ActiveFilters({ activeType, activeBrand, activeCondition }: ActiveFiltersProps) {
+export function ActiveFilters({ activeType, activeBrand, activePlatform, activeCondition }: ActiveFiltersProps) {
   const chips: { label: string; removeHref: string }[] = [];
 
   if (activeType) {
@@ -24,7 +25,7 @@ export function ActiveFilters({ activeType, activeBrand, activeCondition }: Acti
     if (type) {
       chips.push({
         label: type.label,
-        removeHref: buildHref({ marca: activeBrand, estado: activeCondition }),
+        removeHref: buildHref({ marca: activeBrand, plataforma: activePlatform, estado: activeCondition }),
       });
     }
   }
@@ -37,10 +38,20 @@ export function ActiveFilters({ activeType, activeBrand, activeCondition }: Acti
       });
     }
   }
+  if (activePlatform && activeBrand) {
+    const platforms = BRAND_PLATFORMS[activeBrand] ?? [];
+    const platform = platforms.find((p) => p.slug === activePlatform);
+    if (platform) {
+      chips.push({
+        label: platform.label,
+        removeHref: buildHref({ tipo: activeType, marca: activeBrand, estado: activeCondition }),
+      });
+    }
+  }
   if (activeCondition) {
     chips.push({
       label: activeCondition === 'novo' ? 'Novo' : 'Usado',
-      removeHref: buildHref({ tipo: activeType, marca: activeBrand }),
+      removeHref: buildHref({ tipo: activeType, marca: activeBrand, plataforma: activePlatform }),
     });
   }
 

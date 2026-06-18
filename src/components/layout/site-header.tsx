@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart';
@@ -26,9 +27,14 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="font-display text-xl font-bold tracking-tight text-cartridge-400">
-              Cantinho<span className="text-ink-50">DaJogatina</span>
-            </span>
+            <Image
+              src="/logo.png"
+              alt="Cantinho da Jogatina"
+              width={160}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">

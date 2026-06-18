@@ -79,6 +79,37 @@ export const BRANDS: { slug: BrandSlug; label: string }[] = [
   { slug: 'retro', label: 'Retro' },
 ];
 
+// Sub-plataformas disponíveis por marca. Apenas marcas com múltiplas gerações
+// têm entradas aqui; PC e Retro não têm sub-filtro.
+export const BRAND_PLATFORMS: Partial<Record<BrandSlug, { slug: string; label: string }[]>> = {
+  playstation: [
+    { slug: 'ps5', label: 'PS5' },
+    { slug: 'ps4', label: 'PS4' },
+    { slug: 'ps3', label: 'PS3' },
+    { slug: 'ps2', label: 'PS2' },
+    { slug: 'ps1', label: 'PS1' },
+    { slug: 'psp', label: 'PSP' },
+    { slug: 'psvita', label: 'PS Vita' },
+  ],
+  xbox: [
+    { slug: 'xbox-smart-delivery', label: 'Xbox Series' },
+    { slug: 'xbox-one', label: 'Xbox One' },
+    { slug: 'xbox-360', label: 'Xbox 360' },
+  ],
+  nintendo: [
+    { slug: 'nintendo-switch', label: 'Switch' },
+    { slug: 'nintendo-3ds', label: '3DS' },
+    { slug: 'wii-u', label: 'Wii U' },
+    { slug: 'wii', label: 'Wii' },
+    { slug: 'gamecube', label: 'GameCube' },
+    { slug: 'nintendo-64', label: 'N64' },
+    { slug: 'snes', label: 'SNES' },
+    { slug: 'gameboy-advance', label: 'GBA' },
+    { slug: 'gameboy-color', label: 'GBC' },
+    { slug: 'gameboy', label: 'Game Boy' },
+  ],
+};
+
 /** Dado um conjunto de slugs de categoria de um produto, devolve o Tipo de Produto. */
 export function getProductType(categorySlugs: string[]): ProductTypeSlug | null {
   for (const type of PRODUCT_TYPES) {

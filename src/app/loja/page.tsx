@@ -15,6 +15,7 @@ interface ShopPageProps {
   searchParams: Promise<{
     tipo?: string;
     marca?: string;
+    plataforma?: string;
     estado?: string;
     pesquisa?: string;
     ordenar?: string;
@@ -33,10 +34,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     | 'title_asc';
   const productType = params.tipo as ProductTypeSlug | undefined;
   const brand = params.marca as BrandSlug | undefined;
+  const platform = params.plataforma;
 
   const { products, total } = await getProducts({
     productType,
     brand,
+    platform,
     conditionSlug: params.estado,
     search: params.pesquisa,
     sort,
@@ -60,11 +63,11 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        <ShopFilters activeType={productType} activeBrand={brand} activeCondition={params.estado} />
+        <ShopFilters activeType={productType} activeBrand={brand} activePlatform={platform} activeCondition={params.estado} />
 
         <div>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-            <ActiveFilters activeType={productType} activeBrand={brand} activeCondition={params.estado} />
+            <ActiveFilters activeType={productType} activeBrand={brand} activePlatform={platform} activeCondition={params.estado} />
             <SortSelect value={sort} />
           </div>
 

@@ -5,7 +5,7 @@ export default function ContactosPage() {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="font-display text-3xl font-bold text-ink-50 mb-2">Contactos</h1>
       <p className="text-ink-300 mb-10">
-        A tua consola está a dar tilt? Tens um jogo para vender? Fala connosco.
+        Tens um jogo para vender? Fala connosco.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">

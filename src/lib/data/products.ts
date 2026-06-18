@@ -88,6 +88,8 @@ export interface ProductFilters {
   productType?: ProductTypeSlug;
   /** Eixo 2: Playstation | Xbox | Nintendo | PC | Retro — ver src/lib/taxonomy.ts */
   brand?: BrandSlug;
+  /** Sub-filtro de plataforma específica (ex: ps5, xbox-360, nintendo-switch) */
+  platform?: string;
   conditionSlug?: string; // pa_estado: novo/usado
   search?: string;
   minPrice?: number;
@@ -158,6 +160,11 @@ export async function getProducts(filters: ProductFilters = {}) {
         .map((a) => a.slug);
       return getProductBrand(p.categories.map((c) => c.slug), platformSlugs) === filters.brand;
     });
+  }
+  if (filters.platform) {
+    products = products.filter((p) =>
+      p.attributes.some((a) => a.attribute_slug === 'pa_plataforma' && a.slug === filters.platform)
+    );
   }
   if (filters.conditionSlug) {
     products = products.filter((p) =>

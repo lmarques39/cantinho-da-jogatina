@@ -1,14 +1,22 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-ink-700 bg-ink-900">
+    <footer className="border-t border-ink-700 bg-ink-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <span className="font-display text-lg font-bold text-cartridge-400">
-              Cantinho<span className="text-ink-50">DaJogatina</span>
-            </span>
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <Image
+                src="/logo.png"
+                alt="Cantinho da Jogatina"
+                width={160}
+                height={40}
+                className="h-8 w-auto"
+                priority
+              />
+          </Link>
             <p className="mt-3 text-sm text-ink-300 max-w-xs">
               Compra e vende jogos e consolas usadas com confiança. Do retro ao atual, para todas as
               plataformas.
