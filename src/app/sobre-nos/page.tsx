@@ -26,11 +26,10 @@ export default function SobreNosPage() {
           </p>
         </div>
         <div className="lg:w-[420px] shrink-0">
-          {}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/sobre_nos_1.jpg"
-              alt="Interior da loja Cantinho da Jogatina"
+              src="/public/images/sobre_nos_1.png"
+              alt="1"
               fill
               className="object-cover"
               sizes="(min-width: 1024px) 420px, 100vw"
@@ -43,10 +42,9 @@ export default function SobreNosPage() {
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
-            {/* Substitui pelo teu caminho real */}
             <Image
-              src="/sobre-nos/sobre_nos_2.jpg"
-              alt="Produtos em exposição"
+              src="/public/images/sobre_nos_2.png"
+              alt="2"
               fill
               className="object-cover"
               sizes="(min-width: 640px) 50vw, 100vw"
@@ -54,8 +52,8 @@ export default function SobreNosPage() {
           </div>
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/image.png"
-              alt="Reparação de consolas"
+              src="/public/images/sobre_nos_3.png"
+              alt="3"
               fill
               className="object-cover"
               sizes="(min-width: 640px) 50vw, 100vw"
@@ -97,8 +95,8 @@ export default function SobreNosPage() {
         <div className="lg:w-[420px] shrink-0">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/sobre_nos_3.jpg"
-              alt="Serviço de reparação de consolas"
+              src="/public/images/sobre_nos_4.png"
+              alt="4"
               fill
               className="object-cover"
               sizes="(min-width: 1024px) 420px, 100vw"
