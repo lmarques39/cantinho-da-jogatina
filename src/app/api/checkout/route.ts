@@ -96,6 +96,7 @@ export async function POST(request: NextRequest) {
   const { error: itemsError } = await supabase.from('order_items').insert(orderItemRows);
   if (itemsError) {
     console.error('Erro ao guardar itens da encomenda:', itemsError.message);
+    await supabase.from('orders').delete().eq('id', order.id);
     return NextResponse.json({ error: 'Não foi possível guardar os itens da encomenda.' }, { status: 500 });
   }
 
