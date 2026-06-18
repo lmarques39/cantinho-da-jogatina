@@ -26,10 +26,10 @@ export default function SobreNosPage() {
           </p>
         </div>
         <div className="lg:w-[420px] shrink-0">
-          {/* Substitui /sobre-nos/foto-loja.jpg pela tua imagem real */}
+          {}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/foto-loja.jpg"
+              src="/sobre-nos/sobre_nos_1.jpg"
               alt="Interior da loja Cantinho da Jogatina"
               fill
               className="object-cover"
@@ -45,7 +45,7 @@ export default function SobreNosPage() {
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             {/* Substitui pelo teu caminho real */}
             <Image
-              src="/sobre-nos/foto-2.jpg"
+              src="/sobre-nos/sobre_nos_2.jpg"
               alt="Produtos em exposição"
               fill
               className="object-cover"
@@ -54,7 +54,7 @@ export default function SobreNosPage() {
           </div>
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/foto-3.jpg"
+              src="/sobre-nos/image.png"
               alt="Reparação de consolas"
               fill
               className="object-cover"
@@ -97,7 +97,7 @@ export default function SobreNosPage() {
         <div className="lg:w-[420px] shrink-0">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-cart border border-ink-700 bg-ink-800">
             <Image
-              src="/sobre-nos/foto-reparacao.jpg"
+              src="/sobre-nos/sobre_nos_3.jpg"
               alt="Serviço de reparação de consolas"
               fill
               className="object-cover"
