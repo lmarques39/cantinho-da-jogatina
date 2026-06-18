@@ -6,6 +6,7 @@ import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart';
 import { cn } from '@/lib/utils';
 import { SearchBar } from './search-bar';
+import { ThemeToggle } from './theme-toggle';
 
 const NAV_LINKS = [
   { href: '/loja', label: 'Loja' },
@@ -42,8 +43,9 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <SearchBar />
+            <ThemeToggle />
             <Link
               href="/carrinho"
               aria-label="Carrinho de compras"

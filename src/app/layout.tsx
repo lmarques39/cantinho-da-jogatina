@@ -28,10 +28,30 @@ export const metadata: Metadata = {
     'Compra e vende jogos e consolas usadas com confiança. Vasta seleção para todas as plataformas, do retro ao atual.',
 };
 
+// Script que corre ANTES da página renderizar, para evitar um "flash" de
+// cor errada. Lê o localStorage e aplica a classe .dark imediatamente.
+const themeScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  } catch(e) {}
+})()
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-PT" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-body bg-ink-800 text-ink-50 min-h-screen flex flex-col">
+    <html
+      lang="pt-PT"
+      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="font-body min-h-screen flex flex-col">
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

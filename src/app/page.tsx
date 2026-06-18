@@ -12,19 +12,23 @@ export default async function HomePage() {
       {/* Banner principal rotativo (inclui o hero da marca como 1º slide) */}
       <PromoBanner />
 
-      {/* Categorias rápidas */}
+      {/* Categorias rápidas — cores alternadas branco / verde */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { label: 'Jogos', href: '/loja?tipo=jogos' },
-            { label: 'Consolas', href: '/loja?tipo=consolas' },
-            { label: 'Jogos Soltos', href: '/loja?tipo=jogos-soltos' },
-            { label: 'Acessórios', href: '/loja?tipo=acessorios' },
+            { label: 'Jogos', href: '/loja?tipo=jogos', accent: false },
+            { label: 'Consolas', href: '/loja?tipo=consolas', accent: true },
+            { label: 'Jogos Soltos', href: '/loja?tipo=jogos-soltos', accent: false },
+            { label: 'Acessórios', href: '/loja?tipo=acessorios', accent: true },
           ].map((cat) => (
             <Link
               key={cat.href}
               href={cat.href}
-              className="rounded-cart border border-ink-700 bg-ink-700/40 px-4 py-6 text-center font-display font-semibold text-ink-100 hover:border-cartridge-400 hover:text-cartridge-400 transition-colors"
+              className={`rounded-cart border px-4 py-6 text-center font-display font-semibold transition-colors ${
+                cat.accent
+                  ? 'border-leaf-500/30 bg-leaf-500/15 text-leaf-400 hover:bg-leaf-500/25 hover:text-leaf-400'
+                  : 'border-ink-700 bg-ink-800 text-ink-100 hover:border-cartridge-400 hover:text-cartridge-400'
+              }`}
             >
               {cat.label}
             </Link>

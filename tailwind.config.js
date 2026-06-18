@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,41 +8,41 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // "Sala de jogos ao fim da tarde": petróleo profundo + mostarda retro
+        // As cores ink-* são mapeadas para variáveis CSS que mudam entre
+        // tema claro e escuro (definidas em globals.css). Isto permite que
+        // TODOS os componentes existentes se adaptem automaticamente sem
+        // precisar de classes `dark:` em cada um.
         ink: {
-          50: '#eef3f3',
-          100: '#d7e2e3',
-          200: '#aec5c7',
-          300: '#80a4a7',
-          400: '#4f7b7f',
-          500: '#2e5a5e',
-          600: '#1f4548',
-          700: '#16363a',
-          800: '#0f282b', // base background
-          900: '#0a1d1f',
-          950: '#061315',
+          50:  'rgb(var(--ink-50) / <alpha-value>)',
+          100: 'rgb(var(--ink-100) / <alpha-value>)',
+          200: 'rgb(var(--ink-200) / <alpha-value>)',
+          300: 'rgb(var(--ink-300) / <alpha-value>)',
+          400: 'rgb(var(--ink-400) / <alpha-value>)',
+          500: 'rgb(var(--ink-500) / <alpha-value>)',
+          600: 'rgb(var(--ink-600) / <alpha-value>)',
+          700: 'rgb(var(--ink-700) / <alpha-value>)',
+          800: 'rgb(var(--ink-800) / <alpha-value>)',
+          900: 'rgb(var(--ink-900) / <alpha-value>)',
+          950: 'rgb(var(--ink-950) / <alpha-value>)',
         },
         cartridge: {
-          // amarelo-mostarda "cartucho retro"
-          50: '#fdf6e7',
-          100: '#fbe9c0',
-          200: '#f6d287',
-          300: '#f0b94f',
-          400: '#e7a02e', // accent principal
-          500: '#cc8620',
-          600: '#a66818',
-          700: '#7d4d14',
-          800: '#583612',
-          900: '#3a230c',
+          50:  'rgb(var(--cartridge-50) / <alpha-value>)',
+          100: 'rgb(var(--cartridge-100) / <alpha-value>)',
+          200: 'rgb(var(--cartridge-200) / <alpha-value>)',
+          300: 'rgb(var(--cartridge-300) / <alpha-value>)',
+          400: 'rgb(var(--cartridge-400) / <alpha-value>)',
+          500: 'rgb(var(--cartridge-500) / <alpha-value>)',
+          600: 'rgb(var(--cartridge-600) / <alpha-value>)',
+          700: 'rgb(var(--cartridge-700) / <alpha-value>)',
+          800: 'rgb(var(--cartridge-800) / <alpha-value>)',
+          900: 'rgb(var(--cartridge-900) / <alpha-value>)',
         },
         signal: {
-          // vermelho de etiqueta de preço/saldo
           400: '#e6533c',
           500: '#cc3f29',
           600: '#a8311f',
         },
         leaf: {
-          // verde de "Em stock"
           400: '#5fae6a',
           500: '#48954f',
           600: '#36773c',
