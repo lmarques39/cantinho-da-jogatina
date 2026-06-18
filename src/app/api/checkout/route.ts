@@ -122,6 +122,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ orderId: order.id, orderNumber, manifest });
   } catch (err) {
     console.error('Erro ao criar checkout EasyPay:', err);
+    await supabase.from('orders').delete().eq('id', order.id);
     return NextResponse.json(
       { error: 'Não foi possível iniciar o pagamento. Tenta novamente em breve.' },
       { status: 502 }
