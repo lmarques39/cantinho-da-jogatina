@@ -78,6 +78,7 @@ EASYPAY_ACCOUNT_ID
 EASYPAY_API_KEY
 EASYPAY_ENV                    # 'test' or 'prod'
 NEXT_PUBLIC_SITE_URL
+RESEND_API_KEY                 # optional — confirmation emails via Resend; skipped if absent
 ```
 
 ## Database schema

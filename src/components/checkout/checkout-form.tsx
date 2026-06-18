@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 import { useCartStore } from '@/lib/store/cart';
 import { formatPrice } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/client';
 
 declare global {
   interface Window {
@@ -44,6 +45,24 @@ export function CheckoutForm() {
     postalCode: '',
     city: '',
   });
+
+  // Pre-fill form from the logged-in user's profile
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) return;
+      const u = session.user;
+      const m = u.user_metadata ?? {};
+      setForm((prev) => ({
+        name: prev.name || m.full_name || m.nome || '',
+        email: prev.email || u.email || '',
+        phone: prev.phone || m.telefone || '',
+        street: prev.street || m.morada || '',
+        postalCode: prev.postalCode || m.codigo_postal || '',
+        city: prev.city || m.cidade || '',
+      }));
+    });
+  }, []);
 
   function update(field: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [field]: value }));

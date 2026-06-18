@@ -3,9 +3,11 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Loader2, Save, LogOut } from 'lucide-react';
+import { Loader2, Save, LogOut, ShoppingBag, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import type { User } from '@supabase/supabase-js';
+import { formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface ProfileForm {
   nome: string;
@@ -15,6 +17,25 @@ interface ProfileForm {
   morada: string;
   codigo_postal: string;
   cidade: string;
+}
+
+interface OrderItem {
+  title_snapshot: string;
+  quantity: number;
+  price_snapshot: number;
+  line_total: number;
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  status: string;
+  payment_status: string;
+  subtotal: number;
+  shipping_cost: number;
+  total: number;
+  created_at: string;
+  order_items: OrderItem[];
 }
 
 function Field({
@@ -40,12 +61,25 @@ function Field({
 const inputCls =
   'w-full rounded-cart border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-ink-50 placeholder:text-ink-500 outline-none focus:border-cartridge-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
 
+const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
+  pending:    { label: 'Pendente',    cls: 'bg-cartridge-400/15 text-cartridge-400 border-cartridge-400/30' },
+  paid:       { label: 'Pago',        cls: 'bg-leaf-400/15 text-leaf-400 border-leaf-400/30' },
+  processing: { label: 'Em processo', cls: 'bg-leaf-400/15 text-leaf-400 border-leaf-400/30' },
+  shipped:    { label: 'Enviado',     cls: 'bg-leaf-400/15 text-leaf-400 border-leaf-400/30' },
+  completed:  { label: 'Concluído',   cls: 'bg-leaf-400/15 text-leaf-400 border-leaf-400/30' },
+  cancelled:  { label: 'Cancelado',   cls: 'bg-signal-400/15 text-signal-400 border-signal-400/30' },
+  refunded:   { label: 'Reembolsado', cls: 'bg-signal-400/15 text-signal-400 border-signal-400/30' },
+};
+
 export default function ContaPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState<'perfil' | 'encomendas'>('perfil');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
   const router = useRouter();
 
   const [form, setForm] = useState<ProfileForm>({
@@ -80,6 +114,16 @@ export default function ContaPage() {
       setLoading(false);
     });
   }, [router]);
+
+  useEffect(() => {
+    if (tab !== 'encomendas') return;
+    setOrdersLoading(true);
+    fetch('/api/conta/encomendas')
+      .then((r) => r.json())
+      .then(({ orders }) => { if (Array.isArray(orders)) setOrders(orders); })
+      .catch(() => {})
+      .finally(() => setOrdersLoading(false));
+  }, [tab]);
 
   function set(key: keyof ProfileForm) {
     return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -171,140 +215,243 @@ export default function ContaPage() {
         </div>
       </div>
 
-      {/* Formulário */}
-      <form onSubmit={handleSave} className="space-y-6">
-        <div className="rounded-cart border border-ink-700 bg-ink-800 p-6 space-y-5">
-          <h2 className="font-display text-base font-bold text-ink-100 border-b border-ink-700 pb-3">
-            Dados pessoais
-          </h2>
+      {/* Tabs */}
+      <div className="flex border-b border-ink-700 mb-8">
+        {([
+          { key: 'perfil', label: 'Perfil', icon: User },
+          { key: 'encomendas', label: 'Encomendas', icon: ShoppingBag },
+        ] as const).map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors border-b-2 -mb-px',
+              tab === key
+                ? 'border-cartridge-400 text-cartridge-400'
+                : 'border-transparent text-ink-400 hover:text-ink-200'
+            )}
+          >
+            <Icon className="h-4 w-4" />
+            {label}
+          </button>
+        ))}
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="sm:col-span-2">
-              <Field label="Nome completo">
+      {/* Tab: Perfil */}
+      {tab === 'perfil' && (
+        <form onSubmit={handleSave} className="space-y-6">
+          <div className="rounded-cart border border-ink-700 bg-ink-800 p-6 space-y-5">
+            <h2 className="font-display text-base font-bold text-ink-100 border-b border-ink-700 pb-3">
+              Dados pessoais
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="sm:col-span-2">
+                <Field label="Nome completo">
+                  <input
+                    type="text"
+                    value={form.nome}
+                    onChange={set('nome')}
+                    placeholder="O teu nome"
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+
+              <Field label="Data de nascimento">
+                <input
+                  type="date"
+                  value={form.data_nascimento}
+                  onChange={set('data_nascimento')}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="NIF" hint="opcional">
                 <input
                   type="text"
-                  value={form.nome}
-                  onChange={set('nome')}
-                  placeholder="O teu nome"
+                  value={form.nif}
+                  onChange={set('nif')}
+                  placeholder="123456789"
+                  maxLength={9}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Telefone">
+                <input
+                  type="tel"
+                  value={form.telefone}
+                  onChange={set('telefone')}
+                  placeholder="+351 9XX XXX XXX"
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Email">
+                <input
+                  type="email"
+                  value={user.email ?? ''}
+                  disabled
                   className={inputCls}
                 />
               </Field>
             </div>
-
-            <Field label="Data de nascimento">
-              <input
-                type="date"
-                value={form.data_nascimento}
-                onChange={set('data_nascimento')}
-                className={inputCls}
-              />
-            </Field>
-
-            <Field label="NIF" hint="opcional">
-              <input
-                type="text"
-                value={form.nif}
-                onChange={set('nif')}
-                placeholder="123456789"
-                maxLength={9}
-                className={inputCls}
-              />
-            </Field>
-
-            <Field label="Telefone">
-              <input
-                type="tel"
-                value={form.telefone}
-                onChange={set('telefone')}
-                placeholder="+351 9XX XXX XXX"
-                className={inputCls}
-              />
-            </Field>
-
-            <Field label="Email">
-              <input
-                type="email"
-                value={user.email ?? ''}
-                disabled
-                className={inputCls}
-              />
-            </Field>
           </div>
-        </div>
 
-        <div className="rounded-cart border border-ink-700 bg-ink-800 p-6 space-y-5">
-          <h2 className="font-display text-base font-bold text-ink-100 border-b border-ink-700 pb-3">
-            Morada de entrega
-          </h2>
+          <div className="rounded-cart border border-ink-700 bg-ink-800 p-6 space-y-5">
+            <h2 className="font-display text-base font-bold text-ink-100 border-b border-ink-700 pb-3">
+              Morada de entrega
+            </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="sm:col-span-2">
-              <Field label="Morada" hint="rua, número, andar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="sm:col-span-2">
+                <Field label="Morada" hint="rua, número, andar">
+                  <input
+                    type="text"
+                    value={form.morada}
+                    onChange={set('morada')}
+                    placeholder="Rua Exemplo, 123, 2º Dto"
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+
+              <Field label="Código postal">
                 <input
                   type="text"
-                  value={form.morada}
-                  onChange={set('morada')}
-                  placeholder="Rua Exemplo, 123, 2º Dto"
+                  value={form.codigo_postal}
+                  onChange={set('codigo_postal')}
+                  placeholder="1234-567"
+                  maxLength={8}
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Cidade">
+                <input
+                  type="text"
+                  value={form.cidade}
+                  onChange={set('cidade')}
+                  placeholder="Lisboa"
                   className={inputCls}
                 />
               </Field>
             </div>
+          </div>
 
-            <Field label="Código postal">
-              <input
-                type="text"
-                value={form.codigo_postal}
-                onChange={set('codigo_postal')}
-                placeholder="1234-567"
-                maxLength={8}
-                className={inputCls}
-              />
-            </Field>
+          {error && (
+            <div className="rounded-cart border border-signal-500/60 bg-signal-500/10 px-4 py-3 text-sm text-signal-400">
+              {error}
+            </div>
+          )}
+          {saved && (
+            <div className="rounded-cart border border-leaf-500/60 bg-leaf-500/10 px-4 py-3 text-sm text-leaf-400">
+              Perfil guardado com sucesso.
+            </div>
+          )}
 
-            <Field label="Cidade">
-              <input
-                type="text"
-                value={form.cidade}
-                onChange={set('cidade')}
-                placeholder="Lisboa"
-                className={inputCls}
-              />
-            </Field>
+          <div className="flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex items-center gap-2 rounded-cart border border-ink-600 px-4 py-2.5 text-sm font-medium text-ink-300 hover:border-signal-400 hover:text-signal-400 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Terminar sessão
+            </button>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex items-center gap-2 rounded-cart bg-cartridge-400 px-6 py-2.5 text-sm font-bold text-ink-900 hover:bg-cartridge-300 disabled:opacity-60 transition-colors shadow-cart"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Guardar
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Tab: Encomendas */}
+      {tab === 'encomendas' && (
+        <div>
+          {ordersLoading ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="h-6 w-6 animate-spin text-cartridge-400" />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="rounded-cart border border-ink-700 bg-ink-800 p-10 text-center">
+              <ShoppingBag className="mx-auto h-10 w-10 text-ink-600 mb-3" />
+              <p className="text-ink-300 text-sm">Ainda não tens encomendas.</p>
+              <a
+                href="/loja"
+                className="mt-3 inline-block text-sm font-semibold text-cartridge-400 hover:underline"
+              >
+                Explorar loja →
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => {
+                const st = STATUS_LABELS[order.status] ?? { label: order.status, cls: 'bg-ink-700 text-ink-300 border-ink-600' };
+                const date = new Date(order.created_at).toLocaleDateString('pt-PT', {
+                  day: '2-digit', month: 'long', year: 'numeric',
+                });
+                return (
+                  <div key={order.id} className="rounded-cart border border-ink-700 bg-ink-800 overflow-hidden">
+                    {/* Cabeçalho da encomenda */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-ink-700">
+                      <div>
+                        <p className="text-xs text-ink-400 mb-0.5">{date}</p>
+                        <p className="font-mono text-sm font-semibold text-ink-100">{order.order_number}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={cn('rounded-full border px-2.5 py-0.5 text-xs font-semibold', st.cls)}>
+                          {st.label}
+                        </span>
+                        <span className="font-display text-base font-bold text-cartridge-400">
+                          {formatPrice(Number(order.total))}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Itens */}
+                    <ul className="divide-y divide-ink-700/60">
+                      {order.order_items.map((item, idx) => (
+                        <li key={idx} className="flex items-center justify-between px-5 py-3 gap-4">
+                          <span className="text-sm text-ink-200 leading-snug">{item.title_snapshot}</span>
+                          <span className="shrink-0 text-xs text-ink-400">
+                            {item.quantity}× {formatPrice(Number(item.price_snapshot))}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Portes */}
+                    {Number(order.shipping_cost) > 0 && (
+                      <div className="flex items-center justify-between px-5 py-2.5 border-t border-ink-700/60 bg-ink-900/40">
+                        <span className="text-xs text-ink-400">Portes</span>
+                        <span className="text-xs text-ink-400">{formatPrice(Number(order.shipping_cost))}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-8 flex justify-end">
+            <button
+              onClick={signOut}
+              className="flex items-center gap-2 rounded-cart border border-ink-600 px-4 py-2.5 text-sm font-medium text-ink-300 hover:border-signal-400 hover:text-signal-400 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Terminar sessão
+            </button>
           </div>
         </div>
-
-        {/* Feedback */}
-        {error && (
-          <div className="rounded-cart border border-signal-500/60 bg-signal-500/10 px-4 py-3 text-sm text-signal-400">
-            {error}
-          </div>
-        )}
-        {saved && (
-          <div className="rounded-cart border border-leaf-500/60 bg-leaf-500/10 px-4 py-3 text-sm text-leaf-400">
-            Perfil guardado com sucesso.
-          </div>
-        )}
-
-        <div className="flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={signOut}
-            className="flex items-center gap-2 rounded-cart border border-ink-600 px-4 py-2.5 text-sm font-medium text-ink-300 hover:border-signal-400 hover:text-signal-400 transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Terminar sessão
-          </button>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="flex items-center gap-2 rounded-cart bg-cartridge-400 px-6 py-2.5 text-sm font-bold text-ink-900 hover:bg-cartridge-300 disabled:opacity-60 transition-colors shadow-cart"
-          >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            Guardar
-          </button>
-        </div>
-      </form>
+      )}
     </div>
   );
 }

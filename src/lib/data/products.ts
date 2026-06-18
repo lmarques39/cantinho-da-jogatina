@@ -251,6 +251,24 @@ export async function getRandomProducts(limit = 12): Promise<Product[]> {
   return data.map(mapProductRow);
 }
 
+export async function getProductsBySlugs(slugs: string[]): Promise<Product[]> {
+  if (!slugs.length) return [];
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select(PRODUCT_SELECT)
+    .in('slug', slugs)
+    .eq('status', 'publish');
+
+  if (error || !data) return [];
+
+  const products = data.map(mapProductRow);
+  // Preserve input order (most recently visited first)
+  return slugs
+    .map((slug) => products.find((p) => p.slug === slug))
+    .filter((p): p is Product => Boolean(p));
+}
+
 export async function getCategories(): Promise<Category[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase

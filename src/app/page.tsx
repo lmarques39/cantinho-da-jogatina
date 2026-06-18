@@ -3,6 +3,7 @@ import { getProducts } from '@/lib/data/products';
 import { RecommendedProducts } from '@/components/shop/recommended-products';
 import { RecommendedCarousel } from '@/components/shop/recommended-carousel';
 import { PromoBanner } from '@/components/layout/promo-banner';
+import { RecentlyVisited } from '@/components/shop/recently-visited';
 
 export default async function HomePage() {
   const { products: featured } = await getProducts({ sort: 'newest', perPage: 12 });
@@ -65,6 +66,10 @@ export default async function HomePage() {
       {/* ── Recomendados para ti ──────────────────────────────────────────── */}
       {/* Fundo: bg-ink-800 — cria alternância visual com a secção anterior */}
       <RecommendedProducts sectionClassName="bg-ink-800 border-t border-ink-700" />
+
+      {/* ── Vistos recentemente ───────────────────────────────────────────── */}
+      {/* Fundo: bg-ink-900 — só aparece se houver histórico em localStorage */}
+      <RecentlyVisited sectionClassName="bg-ink-900 border-t border-ink-700" />
 
       {/* ── Faixa de confiança ───────────────────────────────────────────── */}
       {/* Fundo: bg-ink-950 — a mais escura, âncora visual antes do footer */}

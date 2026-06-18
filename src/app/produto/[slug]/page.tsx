@@ -6,6 +6,8 @@ import { getProductType, getProductBrand, PRODUCT_TYPES } from '@/lib/taxonomy';
 import { AddToCartForm } from '@/components/product/add-to-cart-form';
 import { ConditionBadge } from '@/components/product/condition-badge';
 import { ProductCard } from '@/components/product/product-card';
+import { RecentlyVisitedTracker } from '@/components/shop/recently-visited-tracker';
+import { RecentlyVisited } from '@/components/shop/recently-visited';
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -32,6 +34,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <RecentlyVisitedTracker slug={slug} />
       <nav className="text-sm text-ink-400 mb-6">
         <Link href="/loja" className="hover:text-cartridge-400">
           Loja
@@ -128,6 +131,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       )}
+
+      <RecentlyVisited
+        currentSlug={slug}
+        sectionClassName="-mx-4 sm:-mx-6 lg:-mx-8 mt-16 border-t border-ink-700 bg-ink-800"
+      />
     </div>
   );
 }
