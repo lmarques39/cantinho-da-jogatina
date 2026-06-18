@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/server';
 import type { Product, Category, AttributeValue, ProductVariation } from '@/types';
 import { getProductType, getProductBrand, type ProductTypeSlug, type BrandSlug } from '@/lib/taxonomy';
 
@@ -100,7 +100,7 @@ export interface ProductFilters {
 }
 
 export async function getProducts(filters: ProductFilters = {}) {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { page = 1, perPage = 24 } = filters;
 
   // Os filtros de Tipo de Produto e Marca dependem de relações N:N
@@ -180,7 +180,7 @@ export async function getProducts(filters: ProductFilters = {}) {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select(PRODUCT_SELECT)
@@ -200,7 +200,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
   if (!product.categories.length) return [];
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const categoryId = product.categories[0].id;
 
   const { data, error } = await supabase
@@ -235,7 +235,7 @@ export async function getRelatedProducts(product: Product, limit = 4): Promise<P
  * assinatura.
  */
 export async function getRandomProducts(limit = 12): Promise<Product[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select(PRODUCT_SELECT)
@@ -252,7 +252,7 @@ export async function getRandomProducts(limit = 12): Promise<Product[]> {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('categories')
     .select('id, slug, name, parent_id')
@@ -266,7 +266,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getPlatforms(): Promise<AttributeValue[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('attribute_values')
     .select('id, slug, name, attributes!inner(slug, name)')
